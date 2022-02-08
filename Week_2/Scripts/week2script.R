@@ -1,5 +1,5 @@
 ### This is my first script. I am learning how to import data.
-### Created by:
+### Created by: Vivian Vy Le
 ### Created on: 2022-02-03
 #############################################
 
