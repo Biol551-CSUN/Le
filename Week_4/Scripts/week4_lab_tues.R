@@ -43,9 +43,10 @@ ggplot(data = penguin_plot, #penguin plot is the new dataset because we calculat
   labs(title = "Comapring Body Mass Across Female Penguin Species",
        x = "Species" , 
        y = "Log Body Mass (g)", #calculated the body mass in log
-       caption = "Source: Palmer Pengiuns LTER/ palmerpenguin package") +
+       caption = "Source: Palmer Pengiuns LTER/palmerpenguin package",
+       fill = "Species") +
   theme(plot.title = element_text(hjust = 0.5),
         axis.text = element_text(size = 10),
         panel.border = element_rect(fill = NA, color = "black")) #adds a border to graph
-
+ggsave(here("Week_4", "Output","penguin.plot.png"), width = 7, height = 6)
 

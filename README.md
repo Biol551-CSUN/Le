@@ -10,4 +10,4 @@ This repository is organized by **Week_#** followed by:
 Contents:
 * [Week 2: Data and scripts](https://github.com/Biol551-CSUN/Le/tree/main/Week_2)
 * [Week 3: Data, scripts, and output for the first plot](https://github.com/Biol551-CSUN/Le/tree/main/Week_3)
-* [Week 4: Data, scripts, and output for dplyr and tidyr] (https://github.com/Biol551-CSUN/Le/tree/main/Week_4)
+* [Week 4: Data, scripts, and output for dplyr and tidyr](https://github.com/Biol551-CSUN/Le/tree/main/Week_4)
