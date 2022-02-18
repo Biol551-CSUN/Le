@@ -1,4 +1,4 @@
-Variables,Season,Tide,Time,Value_data,Value_sd,Value_var
+Variables,Season,Tide,Time,Value_mean,Value_sd,Value_var
 NN,FALL,High,Day,0.315,0.2524928347081306,0.06375263157894737
 NN,FALL,High,Night,0.685,1.126407890971164,1.2687947368421053
 NN,FALL,Low,Day,3.366,2.7747288155782,7.699120000000001
