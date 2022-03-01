@@ -36,8 +36,8 @@ CondandDepth <-inner_join(CondData_time,Depthdata_time, by = "datetime") %>%
         sep = ".") %>% #removed the separate hour and minute columns
   relocate("Hours_Minutes", .after = "datetime") %>% #moved the column to after datetime, but after viewing and saving the csv file, column was moved to after datetime -__-
   group_by(Hours_Minutes) %>%
-  summarise_at(c("datetime","TempInSitu", "SalinityInSitu_1pCal", "Depth"), mean) %>% #calculated the means for the selected columns
-  write.csv(here("Week_5","Output","CondandDepth_summary.csv"))
+  summarise_at(c("datetime","TempInSitu", "SalinityInSitu_1pCal", "Depth"), mean) #calculated the means for the selected columns %>%
+write.csv(here("Week_5","Output","CondandDepth_summary.csv"))
 view(CondandDepth) #AN: once saved the csv, remember to run the script and view before the save statement so that the object has values, can plot with values
 
 #### plotting data ####
