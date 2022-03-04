@@ -1,0 +1,93 @@
+---
+author: Vivian Vy Le
+date: '`r format(Sys.Date())`'
+title: Penguins
+subtitle: Week 6 Lab Assignment
+output:
+  html_document:
+    toc: true
+    theme: spacelab
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE,  fig.path = "../Output/")
+```
+
+# Introduction
+In BIOL 551 lecture, we learned how to edit images and create tables with Rmarkdown. This is the assignment for Week 6 Thursday Lab. For this assignment, I used palmerpegnuins dataset to create a plot and a table.
+
+## Load library
+The dataset used for this document is palmerpenguins.
+```{r}
+library(tidyverse)
+library(palmerpenguins)
+library(here)
+library(kableExtra)
+```
+
+## Load data
+```{r}
+glimpse(penguins)
+view(penguins)
+```
+
+### Data analysis
+The original data measured the penguins in grams. Here, the analysis converted the measurement from grams to kilograms.
+
+```{r}
+weight_data <-penguins %>%
+  mutate(body_mass_kg = body_mass_g/1000) %>%
+  drop_na() %>%
+  relocate(body_mass_kg, .after=body_mass_g) %>% #move the column next to body mass grams
+  rename("Species" = species,
+         "Sex" = sex,
+         "Islands" = island) #renaming the columns so that they are capitalized 
+view(weight_data)
+```
+
+
+#### Plotting data
+After analyzing the data, I plotted the body mass across the penguins species and island. I wanted to compare the differences between sexes. species, and islands.
+
+```{r, penguin_weight, out.width = "50%", fig.align='center'}
+weight_data %>%
+  ggplot(aes(x = Sex, y = body_mass_kg, color = Sex)) +
+  geom_point() + #show all of the data points 
+  geom_boxplot() + #showing five-number summary for data
+  facet_wrap(~Islands) +
+  labs(title = "Comparing Penguin Body Weight Across Islands",
+       caption = "Data used from palmerpenguins",
+       x = "Sex",
+       y = "Body Mass (kg)",
+       color = "Sex") +
+  theme(plot.title = element_text(hjust = 0.5), #centers the title
+        axis.text = element_text(size = 10), #changes the text size of the axes
+        panel.border = element_rect(fill = NA, color = "black")) + #adds a black border to the plot
+  scale_color_viridis_d() #using viridis for the outline of the boxplot
+```
+
+
+#### Data table
+I created the table and grouped the information based on island, species, and sex.
+
+The data table has averages for:
+
+ -  body mass
+ - flipper length
+ - bill length
+ - bill depth  
+
+```{r, penguin_table, fig.align='center'}
+weight_data %>%
+  group_by(Islands, Species, Sex) %>% #group the data by island, species, and sex for the table
+  summarise("Avg Body Mass (kg)" = mean(body_mass_kg),
+            "Avg Flipper Length (mm)" = mean(flipper_length_mm),
+            "Avg Bill Length (mm)" = mean(bill_length_mm),
+            "Avg Bill Depth (mm)" = mean(bill_depth_mm)) %>%
+  mutate_if(is.numeric, round, digits = 2) %>%
+  kbl(caption = "Comparing Average Measurements Across Penguin Species and Islands") %>%
+  kable_minimal() %>%
+  pack_rows("Biscoe", 1,4) %>% #groups the rows to the island name, groups rows 1-4
+  pack_rows("Dream", 5,8) %>% #groups rows 5-8
+  pack_rows("Torgersen", 9,10) #groups rows 9-10
+```

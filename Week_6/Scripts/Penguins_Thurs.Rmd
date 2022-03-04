@@ -1,0 +1,56 @@
+---
+title: "Penguins Rmarkdown Practice from Week 6 Thursday Lecture"
+author: "Vivian Vy Le"
+date: '2022-03-03'
+output: 
+  html_document:
+    theme: yeti
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.path = "../Output/", message = FALSE, warning = FALSE)
+```
+
+## Introduction
+
+Today, we are working on using Rmarkdown with the palmerpenguin dataset.
+
+### Load libraries
+```{r}
+library(tidyverse)
+library(here)
+library(palmerpenguins)
+library(kableExtra)
+library(palettetown)
+```
+
+### Load data
+```{r, echo = FALSE}
+glimpse(penguins)
+view(penguins)
+```
+
+### Make a plot
+```{r, penguin1, out.width = "50%", fig.align='center', fig.cap = "This is a plot using the palmerpenguin data set"}
+penguins %>%
+  ggplot(aes(x = bill_length_mm,
+             y = bill_depth_mm,
+             color = species)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  labs(x= "Bill Length (mm)",
+       y = "Bill Depth (mm)",
+       color = "Species") +
+  scale_color_manual(values = pokepal(6))
+```
+
+```{r}
+penguins %>%
+  group_by(species) %>%
+  summarise(billmean = mean(bill_length_mm, na.rm = TRUE)) %>%
+  kbl() %>%
+  kable_classic() %>%
+  row_spec(2, bold = T, color = "white", background = "red") %>%
+  kable_styling(full_width = FALSE)
+```
+
