@@ -1,0 +1,72 @@
+---
+title: "Week 7 HW"
+author: "Vivian Vy Le"
+date: '2022-03-08'
+output: 
+  html_document:
+    toc: TRUE
+    theme: lumen
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE,  fig.path = "../Output/")
+```
+
+# Introduction
+In BIOL 551 lecture, we learned how to create maps and plot data over maps. In this assignment, we are using previous TidyTuesday data to practice creating maps. We chose to work with a data set about all trees in San Francisco.
+
+## Load library
+```{r}
+library(tidyverse)
+library(here)
+library(mapdata)
+library(maps)
+library(mapproj)
+```
+
+### Load data
+The data used was from DataSF.
+```{r}
+sf_trees <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-01-28/sf_trees.csv')
+counties<-map_data("county")
+
+```
+
+### View data
+```{r}
+view(sf_trees)
+glimpse(sf_trees)
+glimpse(counties)
+```
+## Magnolia Trees in San Francisco
+We narrowed down the data set to look at a specific tree species, *Magnolia grandiflora*. We specifically looked at permitted trees within San Francisco.
+
+### Data analysis
+```{r}
+magnolia_data <- sf_trees %>%
+  select(species, site_order, longitude, latitude, legal_status) %>%
+  filter(species == "Magnolia grandiflora :: Southern Magnolia",
+         legal_status == "Permitted Site") %>%
+  drop_na()
+view(magnolia_data)
+
+SF_county<-counties %>%
+  filter(region == "california",
+         subregion == "san francisco")
+view(SF_county)
+```
+
+### Plotting data
+```{r, magnolia.tree, out.width = "50%", fig.align='center'}
+ggplot() +
+  geom_polygon(data = SF_county,
+               aes(x = long, y = lat, group = group), fill = "lightgrey", color = "black") +
+  geom_point(data = magnolia_data,
+             aes(x = longitude, y = latitude), color = "#8E4C50") +
+  theme_minimal() +
+  coord_map() +
+  labs(title = "Permitted Magnolia Trees in San Francisco",
+       x = "Longitude",
+       y = "Latitude",
+       caption = "Source: DataSF")
+```
