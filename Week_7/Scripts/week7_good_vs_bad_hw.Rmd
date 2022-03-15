@@ -38,23 +38,26 @@ glimpse(grosses)
 view(grosses)
 ```
 
-## Musicals from 2000 until 2016
+## Musicals from Debuting 2000 until 2016
 The data was recorded from June 1985 to March 2020. In order to narrow this data set, I focused on a few musicals that debuted in 2000 to 2016. Some of these musicals are still showing while some have closed the curtains. The musicals included in the analysis are, Hamilton, Wicked, The Lion King, Mamma Mia!, and Waitress.
 
 ### Data Analysis
 ```{r}
+#filtering out a few shows from the original data
 grosses_2000 <- grosses %>%
   filter(show %in% c("Hamilton", "Wicked", "The Lion King", "Mamma Mia!", "Waitress")) %>%
-  mutate(year = year(week_ending),
+  mutate(year = year(week_ending), #separated year and month
          month = month(week_ending)) %>%
   select(month, year, show, weekly_gross_overall, weekly_gross, potential_gross, avg_ticket_price) %>%
-  group_by(month, year, show)
+  group_by(month, year, show) #groups the data by show and time
 view(grosses_2000)
 
-ham_week <- grosses_2000 %>%
-  filter(show == "Hamilton") %>%
-  select(show, month, year, weekly_gross, potential_gross)
+#using the original data for the time, makes the plot have a continuous x value for good plot
+ham_week <- grosses %>% 
+  filter(show == "Hamilton") %>%  #filtering out Hamilton
+  select(show, week_ending, weekly_gross, potential_gross)  #selecting a few columns 
 view(ham_week)
+
 ```
 
 ### Plotting a Bad Plot
@@ -68,14 +71,18 @@ This is an example of a bad plot. There are a few reasons why this is considered
   
   
 ```{r, badplot, outwidth = "50%", fig.align='center'}
+broadway <- here("Week_7", "Data", "broadway2020.jpg") #creating an object with an image from computer
+broadway <- jpeg::readJPEG(broadway) #function to make R read a jpeg
 grosses_2000 %>%
-  ggplot(aes(x = year), color = show) +
+  ggplot(aes(x = year), color = show) + #setting color for the shows
+  background_image(broadway) + #add the picture as the background for the graph
   geom_line(aes(y=weekly_gross_overall, col = show)) +
   scale_y_continuous(labels = scales::comma) +
-  labs(title = "here we go again!",
-       subtitle = "let's have a celebration the glinda",
-       x = "i live another 50 years, it's not enough",
-       y = "money, money, money",
+  labs(title = "here we go again!", #mammia mia! reference
+       subtitle = "let's have a celebration the glinda", #wicked reference
+       x = "i live another 50 years, it's not enough", #hamilton reference
+       y = "money, money, money", #mammia mia! reference
+       color = "She's imperfect but she tries", #waitress reference
        caption = "source: probs playbill idk") +
   scale_color_manual(values = pokepal(167)) +
   theme_minimal()
@@ -86,19 +93,24 @@ This is an example of a bad plot. There are a few reasons why this is considered
 
   - The titles on the plot and axes are informative and are written in formal English.
   - Instead of having all weekly gross data for all of the shows, this plot focuses on one show.
-  - The colors used are visible and are easy to read.
-  - 
+  - The colors used are visible and are easy to read. They also are contrasting colors to each other, so both filled areas are visible.
+  - This plot is using a stacked area chart. With this we can see the weekly gross changes over time. It is useful for this type of data since we are looking at when Hamilton opened in 2015 until 2020.
   
 ```{r, goodplot, outwidth = "50%", fig.align='center'}
-ggplot(data = ham_week, mapping = aes(x=year)) +
-  geom_line(aes(y = weekly_gross, col = "Weekly Gross")) +
-  geom_line(aes(y = potential_gross, col = "Potential Gross")) +
-  labs(title = "Weekly Ticket Sales For Hamilton: An American Musical",
-       x = "Year",
+ggplot(data = ham_week, mapping = aes(x=week_ending)) +
+  geom_area(aes(y = weekly_gross, fill = "Weekly Gross")) + #creating a filled area for weekly gross
+  geom_area(aes(y = potential_gross, fill = "Potential Gross")) + #creating a filled area for potential gross to compare weekly gross
+  labs(title = "Weekly Ticket Sales For Hamilton: An American Musical", #adding titles and subtitles for plot
+       subtitle = "Gross from 2015 until 2020",
+       x = "Time",
        y = "Gross in Dollars",
-       caption = "Source: The Broadway League",
-       colour = "Type of Gross") +
-  scale_color_manual(values = pokepal(31)) +
-  theme(panel.grid.minor = element_blank())
+       caption = "Source: The Broadway League/TidyTuesday 2020",
+       fill = "Type of Gross") +
+  scale_fill_manual(values = pokepal(13)) + #adding colors to match the parchment outfits in the musical, using weedle as a color palette
+  theme(panel.grid.minor = element_blank(),
+        plot.title = element_text(hjust = 0.5), #centering the text
+        plot.subtitle = element_text(0.5),
+        axis.text = element_text(size = 10)) +
+  theme_minimal()
 ```
 
