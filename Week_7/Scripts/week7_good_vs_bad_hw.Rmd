@@ -79,7 +79,7 @@ grosses_2000 %>%
   geom_line(aes(y=weekly_gross_overall, col = show)) +
   scale_y_continuous(labels = scales::comma) +
   labs(title = "here we go again!", #mammia mia! reference
-       subtitle = "let's have a celebration the glinda", #wicked reference
+       subtitle = "let's have a celebration the glinda way", #wicked reference
        x = "i live another 50 years, it's not enough", #hamilton reference
        y = "money, money, money", #mammia mia! reference
        color = "She's imperfect but she tries", #waitress reference
