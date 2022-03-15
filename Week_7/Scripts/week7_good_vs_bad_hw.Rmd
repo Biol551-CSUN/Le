@@ -1,0 +1,104 @@
+---
+title: "Week_7_Good_vs_Bad_Plot"
+author: "Vivian Vy Le"
+date: '2022-03-15'
+output: 
+  html_document:
+    toc: TRUE
+    theme: lumen
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE,  fig.path = "../Output/")
+```
+
+# Introduction
+In BIOL 551 lecture, we read and learned how to make good and bad plots. We were challenged to create good and bad plots to the best of our abilities. I decided to use a previous TidyTuesday data from 2020, **Broadway Weekly Grosses**.
+
+## Load Library
+```{r}
+library(tidyverse)
+library(here)
+library(ggplot2)
+library(palettetown)
+library(lubridate)
+library(ggpubr)
+library(jpeg)
+library(ggfortify)
+```
+
+### Load Data
+The data used for this assignment comes from TidyTuesday 2020: **Broadway Weekly Grosses**
+```{r}
+grosses <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-04-28/grosses.csv', guess_max = 40000)
+```
+### View Data
+```{r}
+glimpse(grosses)
+view(grosses)
+```
+
+## Musicals from 2000 until 2016
+The data was recorded from June 1985 to March 2020. In order to narrow this data set, I focused on a few musicals that debuted in 2000 to 2016. Some of these musicals are still showing while some have closed the curtains. The musicals included in the analysis are, Hamilton, Wicked, The Lion King, Mamma Mia!, and Waitress.
+
+### Data Analysis
+```{r}
+grosses_2000 <- grosses %>%
+  filter(show %in% c("Hamilton", "Wicked", "The Lion King", "Mamma Mia!", "Waitress")) %>%
+  mutate(year = year(week_ending),
+         month = month(week_ending)) %>%
+  select(month, year, show, weekly_gross_overall, weekly_gross, potential_gross, avg_ticket_price) %>%
+  group_by(month, year, show)
+view(grosses_2000)
+
+ham_week <- grosses_2000 %>%
+  filter(show == "Hamilton") %>%
+  select(show, month, year, weekly_gross, potential_gross)
+view(ham_week)
+```
+
+### Plotting a Bad Plot
+This is an example of a bad plot. There are a few reasons why this is considered a bad plot:
+
+  - The titles of the plot and axes are not informative.
+  - There are a lot of data plotted, however the plot does not reflect all of the shows represented in the data.
+  - The axis titles do not have a form of measurement.
+  - The text on the plot are in informal English.
+  - One of the colors used is a neon color, which makes it difficult to read the graph.
+  
+  
+```{r, badplot, outwidth = "50%", fig.align='center'}
+grosses_2000 %>%
+  ggplot(aes(x = year), color = show) +
+  geom_line(aes(y=weekly_gross_overall, col = show)) +
+  scale_y_continuous(labels = scales::comma) +
+  labs(title = "here we go again!",
+       subtitle = "let's have a celebration the glinda",
+       x = "i live another 50 years, it's not enough",
+       y = "money, money, money",
+       caption = "source: probs playbill idk") +
+  scale_color_manual(values = pokepal(167)) +
+  theme_minimal()
+```
+
+### Plotting a Good Plot
+This is an example of a bad plot. There are a few reasons why this is considered a good plot:
+
+  - The titles on the plot and axes are informative and are written in formal English.
+  - Instead of having all weekly gross data for all of the shows, this plot focuses on one show.
+  - The colors used are visible and are easy to read.
+  - 
+  
+```{r, goodplot, outwidth = "50%", fig.align='center'}
+ggplot(data = ham_week, mapping = aes(x=year)) +
+  geom_line(aes(y = weekly_gross, col = "Weekly Gross")) +
+  geom_line(aes(y = potential_gross, col = "Potential Gross")) +
+  labs(title = "Weekly Ticket Sales For Hamilton: An American Musical",
+       x = "Year",
+       y = "Gross in Dollars",
+       caption = "Source: The Broadway League",
+       colour = "Type of Gross") +
+  scale_color_manual(values = pokepal(31)) +
+  theme(panel.grid.minor = element_blank())
+```
+
