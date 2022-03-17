@@ -19,5 +19,6 @@ This repository is organized by **Week\_#** followed by:
 -   [Week 3 Feb 8 & 10, 2022: First plot using palmerpenguins data](https://github.com/Biol551-CSUN/Le/tree/main/Week_3)
 -   [Week 4 Feb 15 & 17, 2022: dplyr and tidyr](https://github.com/Biol551-CSUN/Le/tree/main/Week_4)
 -   [Week 5 Feb 22 & Feb 24, 2022: tibble, joins, and lubridate](https://github.com/Biol551-CSUN/Le/tree/main/Week_5)
--   [Week 6 Mar 1 & 3, 2022: RMarkdown](https://github.com/Biol551-CSUN/Le/tree/main/Week_6)
--   [Week 7 Mar 8 & 10, 2022: Maps](https://github.com/Biol551-CSUN/Le/tree/main/Week_7)
+-   [Week 6 Mar 1 & 3, 2022: Creating RMarkdown](https://github.com/Biol551-CSUN/Le/tree/main/Week_6)
+-   [Week 7 Mar 8 & 10, 2022: Creating Maps](https://github.com/Biol551-CSUN/Le/tree/main/Week_7)
+-   [Week 8 Mar 15 & 17, 2022: Advanced Plotting and Functional Programming](https://github.com/Biol551-CSUN/Le/tree/main/Week_8)
