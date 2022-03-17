@@ -1,0 +1,86 @@
+---
+title: "Week 8 Homework"
+author: "Vivian Vy Le"
+date: '2022-03-17'
+output: 
+  html_document:
+    toc: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE,  fig.path = "../Output/")
+```
+
+# Introduction
+In BIOL 551, we learned how to create functions. For this assignment, I created a few functions for my data analysis and plot using the PalmerPenguin data set. 
+
+## Load Libraries
+```{r}
+library(tidyverse)
+library(here)
+library(palettetown)
+library(palmerpenguins)
+```
+
+### View Libraries 
+```{r}
+glimpse(penguins)
+view(penguins)
+```
+
+## Data analysis
+
+Here, I am creating a function to calcuate for the ratio of the bill length and depth. I also created a function to convert grams to kilograms.
+```{r}
+bill_ratio<-(penguins$bill_depth_mm/penguins$bill_length_mm) #function to calculate the ratio of bill depth and flipper length
+
+billratio <-function(penguins){
+  bill_ratio<-(penguins$bill_depth_mm/penguins$bill_length_mm)
+  return(bill_ratio)
+}
+
+body_mass_kg <-(penguins$body_mass_g)/1000 #function to convert grams to kilograms
+
+```
+
+
+## Plotting data
+
+With the functions I made in the previous chunk, I then created a plot. The first function I used was to create a function for the color palette. I chose to use the pokemon Roselia as a color palette generator and picked the first 4 colors. I created a function for my first plot. I added the titles and captions after my plot function.
+
+```{r, mass_vs_bill_ratio, outwidth = "60%", fig.align='center'}
+pal <- "Roselia" %>% ichooseyou(4)
+
+plot1 <- function(data, x, y){
+ggplot(penguins,
+       aes(x = {{x}}, 
+           y = {{y}}, color = species, fill = species)) +
+  geom_point() + #showing all the data points
+  geom_smooth(method = "lm") + #used a linear model for graphing
+  scale_color_manual(values = pal) +
+  scale_fill_manual(values = pal) +
+  facet_wrap(~sex) #wanted to see the differences between sex
+}
+
+plot1(penguins, x = body_mass_kg, y = bill_ratio) +
+  labs(title = "Comparing Body Mass and Bill Depth and Length Ratio", #adding titles for plot and axis
+       x = "Body Mass (kg)",
+       y = "Bill Depth and Length Ratio (mm)",
+       color = "Species",
+       fill = "Species",
+       caption = "Source: PalmerPenguins")
+```
+To make sure my functions work, I plotted different data. I chose a different pokemon, Illumise, for the color palette. Then, I plotted flipper length to compare to body mass in kilograms.
+
+```{r, mass_vs_flipper, outwidth = "60%", fig.align='center'}
+pal <- "Illumise" %>% ichooseyou(4) #used a different pokemon color palette to show differnces between plots
+
+plot1(penguins, x= body_mass_kg, y = flipper_length_mm) + #changed the y data to be flipper length
+  labs(title = "Comparing Body Mass and Flipper Length Ratio", #changed the titles to reflect changes in the graphed data.
+       x = "Body Mass (kg)",
+       y = "Flipper Length (mm)",
+       color = "Species",
+       fill = "Species",
+       caption = "Source: PalmerPenguins")
+```
+
