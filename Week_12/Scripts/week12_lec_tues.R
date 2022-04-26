@@ -163,7 +163,7 @@ sent_word_counts %>%
   filter(n >150) %>%
   mutate(n = ifelse(sentiment == "negative", -n, n)) %>%
   mutate(word = reorder (word, n)) %>%
-  ggplot(aes(word, n, fill = sentiment) +
+  ggplot(aes(word, n, fill = sentiment)) +
            geom_col() +
            coord_flip() +
            labs(y = "Contribution to sentiment")
