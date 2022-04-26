@@ -21,6 +21,7 @@ library(tidyverse)
 library(here)
 library(LaCroixColoR)
 library(janitor)
+library(ggplot2)
 ```
 
 ## Load Data
@@ -35,12 +36,12 @@ view(lat_data)
 ```
 
 ## Cleaning up the data
+
 Before analyzing and plotting the data, I am cleaning up the data. Here, I am making sure the columns are either fully characters or variables.
 
 ```{r}
 intertidal_clean <- intertidialdata %>%
   clean_names() #reformat the column titles
-view(intertidal_clean)
 
 intertidal_work <- intertidal_clean %>%
   mutate_at("quadrat", str_replace, "\\,", " ") %>% #removes any commas in the column
@@ -49,20 +50,42 @@ intertidal_work <- intertidal_clean %>%
   rename("whelks" = whelks_counts) %>% #rename the columns to remove the word counts
   rename("crabs" = crabs_counts) %>%
   rename("stars" = stars_counts)
+view(intertidal_work)
 write.csv(intertidal_work, "intertidaldata_clean.csv")
 ```
 
 
 ## Data analysis
+
+I am organizing the data so that I can get the counts for the barnacles at each tide height. I am also making sure that the tide heights are considered as factors.
+
 ```{r}
 values <- intertidal_work %>%
   group_by(site, quadrat) %>%
-  relocate(quadrat, .after = site)
+  relocate(quadrat, .after = site) %>% 
+  pivot_longer(small_barnacles:gooseneck_barnacles, #getting counts of barnacles at each quadrat site
+               names_to = "variables",
+               values_to = "counts") %>%
+  mutate(quadrat = factor(quadrat, 
+                          levels = c("Low", "Mid", "High"))) #turning the quadrat into factors
 ```
 
 ## Plotting data
-```{r}
-p1 <- values %>%
-  gplot()
+
+After organizing and cleaning the data, the plot will show the counts of the various barnacles at each tide height.
+
+```{r, barnacle_plot, outwidth = "60%", fig.align='center'}
+values %>%
+  ggplot(aes(x = quadrat, y = counts, fill = variables)) +
+  geom_bar(position = "dodge", #creates a grouped bar graph instead of stacked
+           stat = "identity") +
+  labs(title = "Barnacle Coverage Within Tide Levels",
+       x = "Quadrat",
+       y = "Count",
+       fill = "Variables") +
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.title = element_text(face = "bold"), #axis text changed to bold
+        axis.text = element_text(size = 10)) + #changed axis text size
+  scale_fill_manual(values = lacroix_palette("Pamplemousse", n = 3, type = "continuous"))
 ```
 
