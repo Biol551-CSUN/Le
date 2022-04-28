@@ -24,3 +24,4 @@ This repository is organized by **Week\_#** followed by:
 -   [Week 8 Mar 15 & 17, 2022: Advanced Plotting and Functional Programming](https://github.com/Biol551-CSUN/Le/tree/main/Week_8)
 -   [Week 10 Apr 5 & 7, 2022: Learning how to get help and creating shiny apps](https://github.com/Biol551-CSUN/Le/tree/main/Week_10))
 -   [Week 12 April 19 & 21, 2022: Strings and Factors](https://github.com/Biol551-CSUN/Le/tree/main/Week_12)
+-   [Week 13 April 26 & 28, 2022: Loops, Maps, & Models]((https://github.com/Biol551-CSUN/Le/tree/main/Week_13))
