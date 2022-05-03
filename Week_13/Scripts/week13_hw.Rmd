@@ -2,16 +2,19 @@
 title: "Week 13 HW"
 author: "Vivian Vy Le"
 date: '2022-04-28'
-output: html_document
+output: 
+  html_document:
+    toc: TRUE
+    theme: lumen
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 ```
 
 # Introduction
 
-In class, we learned how to create loops and map functions. For this assignment, we will create loop and map functions to calculate the mean and standard deviation for temperature and light data collected in tide pools in Oregon.
+In class, we learned how to create loops and map functions. For this assignment, we will create loop and map functions to calculate the mean and standard deviation for temperature and light intensity data collected in tide pools in Oregon.
 
 ##Load Library
 ```{r}
@@ -20,15 +23,54 @@ library(here)
 ```
 
 ## Load Data
+
+There are 4 files to create a loop with. First, I have to set up the file path.
 ```{r}
-data1 <-read_csv(here("Week_13", "Data", "homework", "TP1.csv"))
-data2 <-read_csv(here("Week_13", "Data", "homework", "TP2.csv"))
-data3 <-read_csv(here("Week_13", "Data", "homework", "TP3.csv"))
-data4 <-read_csv(here("Week_13", "Data", "homework", "TP4.csv"))
+path_hw<- here("Week_13", "Data", "homework") #creating a file path
+
+files_hw <- dir(path = path_hw, pattern = ".csv") #selecting for specific files
+
+data_hw <- data.frame(matrix(nrow = length(files_hw), ncol = 5)) #making an empty dataframe with one row for each file and 5 columns
+
+colnames(data_hw) <- c("filename", "mean_temp", "stdev_temp", "mean_light" , "stdev_light") #creating column names for dataframe
+
+data_hw
+```
+## Data Analysis
+
+### Creating a loop
+
+Next, I will fill in the table with the average and standard deviation for temperature and light intensity from the files. I need to create a loop for this.
+
+
+```{r}
+for(i in 1:length(files_hw)){
+  data_loop<-read_csv(paste0(path_hw, "/", files_hw[i]))
+  data_hw$filename[i] <-files_hw[i]
+  data_hw$mean_temp[i] <-mean(data_loop$Temp.C, na.rm = TRUE) #calculating mean for temp
+  data_hw$stdev_temp[i] <-sd(data_loop$Temp.C, na.rm = TRUE) #calculating stand dev for temp
+  data_hw$mean_light[i] <- mean(data_loop$Intensity.lux, na.rm = TRUE) #calculating mean for intensity
+  data_hw$stdev_light[i] <- sd(data_loop$Intensity.lux, na.rm = TRUE) #calculating stand dev for intensity
+}
+data_hw
 ```
 
-## Data analysis
-```{r}
+### Using purr
 
+Here, I am using the purr package instead of a **for loop**.
+
+```{r}
+files_purr <- dir(path = path_hw, pattern = ".csv", full.names = TRUE) #bringing files with purr
+files_purr #can see the entire path name for files
+
+data_purr <- files_purr %>%
+  set_names() %>%
+  map_df(read_csv, .id = "filename") %>%
+  group_by(filename) %>%
+  summarise(mean_temp = mean(Temp.C, na.rm = TRUE), #calculating mean for temp from the files
+            sd_temp = sd(Temp.C, na.rm = TRUE), #calculating stand dev for temp from files
+            mean_light = mean(Intensity.lux, na.rm = TRUE), #calculating mean for intensity
+            sd_light = sd(Intensity.lux, na.rm = TRUE)) #calculating stand dev for intensity
+data_purr
 ```
 
